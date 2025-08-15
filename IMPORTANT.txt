@@ -1,0 +1,32 @@
+Server-side Files:
+server-pg.js - Main server file with Express.js setup
+db-pg.js - Database connection and queries
+socket.js - Socket.IO server configuration
+run-migration.js - Database migration runner
+check-db.js - Database connection checker
+check-schema.js - Database schema validator
+install-deps.js - Dependency installer
+migrations/ - Database migration files
+001_initial_schema.js
+002_add_auth_columns.js
+003_fix_snaps_schema.js
+004_add_image_data_to_snaps.js
+Client-side Files:
+public/index.html - Main HTML file
+public/css/ - Stylesheets
+style.css - Main styles
+auth-animations.css - Authentication animations
+snapfeed.css - Snap feed styles
+public/js/ - Client-side JavaScript
+auth-styles.js - Authentication UI logic
+email-validation.js - Email validation
+snapfeed/ - Snap feed functionality
+public/socket.io/socket.io.js - Socket.IO client library
+public/favicon/KITSFLICK_LOGO.jpg - Site favicon
+Configuration Files:
+.env.example - Environment variables template
+.gitignore - Git ignore rules
+package.json - Project dependencies and scripts
+package-lock.json - Lock file for dependencies
+README.md - Project documentation
+README-POSTGRES.md - PostgreSQL-specific documentation
