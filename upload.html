@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapchat Clone - Upload</title>
+    <link rel="icon" type="image/jpg" href="/favicon/KITSFLICK_LOGO.jpg">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .camera-preview {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center; align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        
+        .camera-switch {
+            display: none; /* Hidden by default, shown only on mobile */
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .camera-switch {
+                display: flex; /* Show on mobile */
+            }
+        }
+        video {
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            border: 4px solid white;
+        }
+        .camera-buttons {
+            margin-top: 10px;
+        }
+        .button-modern {
+            padding: 10px 20px;
+            background: #ffcc00;
+            color: black;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .button-modern:hover {
+            background: #ffaa00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/feed" class="button back-button">← Back to Feed</a>
+        <h1 class="text-2xl mt-4">Upload a Snap</h1>
+        <p class="text-center text-light-color mb-4">Share what you're up to!</p>
+
+        <form id="upload-form" class="form-container">
+            <div class="form-group">
+                <label for="image">Choose an image:</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+                <button type="button" id="open-camera" class="button-modern">📷 Click Snap</button>
+            </div>
+            <div class="form-group">
+                <label for="caption">Caption:</label>
+                <input type="text" id="caption" name="caption" placeholder="Add a caption...">
+            </div>
+            <div class="form-group">
+                <label for="hashtags">Hashtags:</label>
+                <input type="text" id="hashtags" name="hashtags" placeholder="#photo #fun #sunset">
+            </div>
+            <div class="form-group" style="position: relative;">
+                <label for="location">Location:</label>
+                <div class="dropdown" style="position: relative;">
+                    <input type="text" id="location" name="location" class="location-input" placeholder="Select a location" readonly style="cursor: pointer;">
+                    <div class="dropdown-menu" style="position: absolute; top: 100%; left: 0; width: 100%; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000;">
+                        <div class="menu-item"><a href="#" data-value="Canteen">Canteen</a></div>
+                        <div class="menu-item"><a href="#" data-value="Library">Library</a></div>
+                        <div class="menu-item"><a href="#" data-value="Administrative Block (BLOCK 4)">Administrative Block (BLOCK 4)</a></div>
+                        <div class="menu-item"><a href="#" data-value="CSE Block">CSE & IT Block</a></div>
+                        <div class="menu-item"><a href="#" data-value="Civil Block">CIVIL & ECI Block</a></div>
+                        <div class="menu-item"><a href="#" data-value="EC Block">EC Block</a></div>
+                        <div class="menu-item"><a href="#" data-value="EEE Block">EEE Block</a></div>
+                        <div class="menu-item"><a href="#" data-value="Indoor Stadium">Indoor Stadium</a></div>
+                        <div class="menu-item"><a href="#" data-value="KITSW Grounds">KITSW Grounds</a></div>
+                        <div class="menu-item"><a href="#" data-value="Parking">Parking ( BOYS )</a></div>
+                        <div class="menu-item"><a href="#" data-value="Parking">Parking ( GIRLS )</a></div>
+                        <div class="menu-item"><a href="#" data-value="I2RE">I2RE</a></div>
+                        <div class="menu-item"><a href="#" data-value="Workshop Arena">Workshop Arena</a></div>
+                       
+                        <div class="menu-item menu-header">Halls</div>
+                        <div class="menu-item"><a href="#" data-value="Halls">Halls</a></div>
+                        <div class="menu-item"><a href="#" data-value="Auditorium">Auditorium</a></div>
+                        <div class="menu-item"><a href="#" data-value="Silver Jubilee Hall">Silver Jubilee Hall</a></div>
+                        <div class="menu-item"><a href="#" data-value="Civil Seminar Hall">Civil Seminar Hall</a></div>
+                        <div class="menu-item"><a href="#" data-value="CSENSH">CSENSH</a></div>
+                        <div class="menu-item"><a href="#" data-value="MESH">MESH</a></div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                /* Base styles for menu items */
+                .menu-item > a {
+                    display: block;
+                    padding: 15px 20px;
+                    color: #333;
+                    text-decoration: none;
+                    transition: all 0.2s ease;
+                    font-size: 1em;
+                    border-left: 3px solid transparent;
+                    -webkit-tap-highlight-color: transparent;
+                }
+                
+                /* Active state for menu items */
+                .menu-item > a:active {
+                    background: #f0f4ff;
+                    transform: scale(0.98);
+                }
+
+                /* Dropdown menu container */
+                .dropdown-menu {
+                    max-height: 70vh;
+                    overflow-y: auto;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                    border-radius: 8px;
+                    border: 1px solid #e9ecef;
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                /* Menu header style */
+                .menu-header {
+                    font-weight: bold;
+                    color: #333;
+                    padding: 12px 20px;
+                    background-color: #f8f9fa;
+                    border-top: 1px solid #e9ecef;
+                    border-bottom: 1px solid #e9ecef;
+                    margin-top: 5px;
+                    cursor: default;
+                }
+
+                /* Active state for arrow */
+                .has-submenu.active > .submenu-trigger::after {
+                    color: #4a6cf7;
+                    transform: translateY(-50%) rotate(90deg);
+                }
+                
+                /* Location input styling */
+                .location-input {
+                    width: 100%;
+                    padding: 15px 20px;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 8px;
+                    background-color: white;
+                    font-size: 1em;
+                    transition: all 0.2s ease;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    appearance: none;
+                }
+                
+                /* Focus state for input */
+                .location-input:focus {
+                    outline: none;
+                    border-color: #4a6cf7;
+                    box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.2);
+                }
+                
+                /* Animation for menu items */
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateX(10px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+                
+                /* Mobile-specific styles */
+                @media (max-width: 768px) {
+                    .dropdown-menu {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 90%;
+                        max-width: 400px;
+                        max-height: 80vh;
+                        z-index: 1003;
+                    }
+                    
+                    .has-submenu > .submenu {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 90%;
+                        max-width: 400px;
+                        max-height: 80vh;
+                    }
+                    
+                    .menu-item > a,
+                    .submenu-trigger {
+                        padding: 18px 20px;
+                        font-size: 1.1em;
+                    }
+                    
+                    .menu-item > a {
+                        border-bottom: 1px solid #f0f0f0;
+                    }
+                }
+            </style>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const locationInput = document.getElementById('location');
+                    
+                    // Handle menu item selection
+                    function selectMenuItem(value) {
+                        console.log('Selected menu item:', value);
+                        locationInput.value = value;
+                        closeAllMenus();
+                    }
+                    
+                    // Click handler for menu items
+                    document.addEventListener('click', function(e) {
+                        const menuItem = e.target.closest('.menu-item > a');
+                        if (menuItem) {
+                            e.preventDefault();
+                            const value = menuItem.getAttribute('data-value') || menuItem.textContent;
+                            selectMenuItem(value);
+                        }
+                    });
+
+                    // Toggle dropdown when input is clicked
+                    locationInput.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const menu = this.parentNode.querySelector('.dropdown-menu');
+                        const isVisible = menu.style.visibility === 'visible';
+                        
+                        closeAllMenus();
+                        
+                        if (!isVisible) {
+                            showMenu(menu);
+                        }
+                    });
+
+                    // Close all menus when clicking outside
+                    document.addEventListener('click', function(e) {
+                        // Check if the click is inside any menu or the input
+                        const isClickInsideMenu = e.target.closest('.dropdown-menu') || 
+                                              e.target.closest('.has-submenu') ||
+                                              e.target === locationInput;
+                        
+                        // Only close menus if clicking outside all menus and not on the input
+                        if (!isClickInsideMenu) {
+                            closeAllMenus();
+                        }
+                    });
+                    
+                    // Helper functions
+                    function showMenu(menu) {
+                        menu.style.opacity = '1';
+                        menu.style.visibility = 'visible';
+                        menu.style.transform = menu.classList.contains('submenu') ? 'translateX(5px)' : 'translateY(5px)';
+                    }
+                    
+                    function closeAllMenus() {
+                        document.querySelectorAll('.has-submenu.active').forEach(menu => {
+                            menu.classList.remove('active');
+                            const submenu = menu.querySelector('.submenu');
+                            if (submenu) {
+                                submenu.style.opacity = '0';
+                                submenu.style.visibility = 'hidden';
+                            }
+                        });
+                        
+                        // Also close any top-level dropdown menus
+                        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                            if (menu.style.visibility === 'visible') {
+                                menu.style.opacity = '0';
+                                menu.style.visibility = 'hidden';
+                            }
+                        });
+                    }
+                    
+                    // Close menus when clicking outside
+                    document.addEventListener('click', (e) => {
+                        const clickedMenu = e.target.closest('.dropdown-menu');
+                        const clickedSubmenu = e.target.closest('.has-submenu');
+                        
+                        // Only close if clicking outside both the main menu and submenus
+                        if (!clickedMenu && !clickedSubmenu) {
+                            closeAllMenus();
+                        }
+                    }, true); // Use capture phase
+                }); // Close the DOMContentLoaded event listener
+            </script>
+            <button type="submit" class="button-modern">Upload Snap</button>
+        </form>
+    </div>
+
+    <!-- Camera Modal -->
+    <div class="camera-preview" id="camera-preview">
+        <button id="switch-camera" class="camera-switch" title="Switch Camera">🔄</button>
+        <video id="camera-stream" autoplay playsinline></video>
+        <div class="camera-buttons">
+            <button id="capture-btn" class="button-modern">📸 Capture</button>
+            <button id="close-camera" class="button-modern">❌ Close</button>
+        </div>
+    </div>
+
+    <script>
+        const openCameraBtn = document.getElementById('open-camera');
+        const cameraPreview = document.getElementById('camera-preview');
+        const video = document.getElementById('camera-stream');
+        const captureBtn = document.getElementById('capture-btn');
+        const closeCameraBtn = document.getElementById('close-camera');
+        const switchCameraBtn = document.getElementById('switch-camera');
+        let stream;
+        let currentFacingMode = 'environment'; // Start with rear camera by default
+        
+        // Function to get available cameras
+        async function getCameras() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                return devices.filter(device => device.kind === 'videoinput');
+            } catch (err) {
+                console.error('Error enumerating devices:', err);
+                return [];
+            }
+        }
+        
+        // Function to start the camera
+        async function startCamera(facingMode = 'environment') {
+            try {
+                // Stop any existing stream
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                
+                // Try to get user media with the specified facing mode
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+                
+                video.srcObject = stream;
+                currentFacingMode = facingMode;
+                
+                // Show the camera preview
+                cameraPreview.style.display = 'flex';
+                
+                // Show switch button only if multiple cameras are available
+                const cameras = await getCameras();
+                switchCameraBtn.style.display = cameras.length > 1 ? 'flex' : 'none';
+                
+                return true;
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                
+                // If the requested facing mode fails, try the other one
+                if (facingMode === 'environment') {
+                    console.log('Trying user-facing camera...');
+                    return startCamera('user');
+                } else if (facingMode === 'user') {
+                    console.log('Trying environment-facing camera...');
+                    return startCamera('environment');
+                }
+                
+                Swal.fire('Error', 'Unable to access camera. Please check permissions and try again.', 'error');
+                return false;
+            }
+        }
+        
+        // Open camera button click handler
+        openCameraBtn.addEventListener('click', () => {
+            // Start with rear camera by default
+            startCamera('environment');
+        });
+        
+        // Switch camera button click handler
+        switchCameraBtn.addEventListener('click', () => {
+            const newFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+            startCamera(newFacingMode);
+        });
+
+        closeCameraBtn.addEventListener('click', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            cameraPreview.style.display = 'none';
+        });
+
+        captureBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            canvas.toBlob(blob => {
+                const file = new File([blob], "snap.jpg", { type: "image/jpeg" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                document.getElementById('image').files = dataTransfer.files;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Snap Clicked!',
+                    text: 'Now you can upload it!',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    toast: true,
+                    position: 'top-end'
+                });
+
+                closeCameraBtn.click();
+            }, "image/jpeg");
+        });
+
+        // Add some styles for the message container
+        const style = document.createElement('style');
+        style.textContent = `
+            #message {
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                padding: 15px 25px;
+                border-radius: 5px;
+                color: white;
+                font-weight: 500;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                max-width: 90%;
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+            #message.success {
+                background-color: #28a745;
+            }
+            #message.error {
+                background-color: #dc3545;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Function to show messages to the user
+        function showMessage(message, isError = false) {
+            let messageDiv = document.getElementById('message');
+            
+            // Create message div if it doesn't exist
+            if (!messageDiv) {
+                messageDiv = document.createElement('div');
+                messageDiv.id = 'message';
+                document.body.appendChild(messageDiv);
+            }
+            
+            // Set message content and style
+            messageDiv.textContent = message;
+            messageDiv.className = isError ? 'error' : 'success';
+            messageDiv.style.display = 'block';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                    messageDiv.style.opacity = '1';
+                }, 300);
+            }, 5000);
+            
+            // Also log to console
+            if (isError) {
+                console.error(message);
+            } else {
+                console.log(message);
+            }
+        }
+        
+        
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Form submission started');
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            // Log form data for debugging
+            console.log('Form data entries:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value instanceof File ? `${value.name} (${value.size} bytes, ${value.type})` : value}`);
+            }
+
+            try {
+                let userData = JSON.parse(localStorage.getItem('user')) || {};
+                console.log('User data from localStorage:', userData);
+                
+                if (!userData.token) {
+                    console.error('No authentication token found in user data');
+                    // Try to get token from localStorage as fallback
+                    const token = localStorage.getItem('token');
+                    if (token) {
+                        console.log('Found token in localStorage, updating user data');
+                        userData.token = token;
+                        localStorage.setItem('user', JSON.stringify(userData));
+                    } else {
+                        console.error('No authentication token found anywhere');
+                        window.location.href = '/index.html#login';
+                        throw new Error('Please log in to continue');
+                    }
+                }
+
+                console.log('Sending request to /api/snaps...');
+                const response = await fetch('/api/snaps', {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${userData.token}`
+                        // Note: Don't set Content-Type header when using FormData
+                        // The browser will set it automatically with the correct boundary
+                    },
+                    body: formData
+                });
+                
+                console.log('Response status:', response.status);
+                const result = await response.json().catch(e => {
+                    console.error('Error parsing JSON response:', e);
+                    throw new Error('Invalid server response');
+                });
+                console.log('Server response:', result);
+
+                if (response.ok) {
+                    console.log('Upload successful');
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Snap Posted!',
+                        text: 'Redirecting to feed...',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                    showMessage('Snap uploaded successfully!');
+                    form.reset();
+                } else {
+                    console.error('Upload failed:', result);
+                    throw new Error(result.message || `Server responded with status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error in upload process:', error);
+                const errorMessage = error.message || 'Failed to upload snap';
+                console.error('Error details:', {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                });
+                showMessage(errorMessage, true);
+            }
+        });
+    </script>
+</body>
+</html>
+

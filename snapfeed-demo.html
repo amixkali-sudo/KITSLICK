@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnapFeed Demo</title>
+  <link rel="stylesheet" href="/css/snapfeed.css">
+  <link rel="icon" type="image/jpg" href="/favicon/KITSFLICK_LOGO.jpg">
+  <style>
+    /* Demo page specific styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #fafafa;
+    }
+    
+    .demo-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #262626;
+      margin-bottom: 30px;
+    }
+    
+    .instructions {
+      background-color: #f0f8ff;
+      border-left: 4px solid #0095f6;
+      padding: 15px;
+      margin-bottom: 30px;
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .instructions h3 {
+      margin-top: 0;
+      color: #00376b;
+    }
+    
+    .instructions ol {
+      padding-left: 20px;
+    }
+    
+    .instructions li {
+      margin-bottom: 8px;
+    }
+    
+    code {
+      background-color: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+    
+    .login-prompt {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    
+    .login-button {
+      display: inline-block;
+      background-color: #0095f6;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+    
+    .login-button:hover {
+      background-color: #0077c2;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1>SnapFeed Demo</h1>
+    
+    <div id="logged-in-view" style="display: none;">
+      <div class="instructions">
+        <h3>How to use SnapFeed</h3>
+        <ol>
+          <li>Scroll down to view your feed</li>
+          <li>New snaps will be marked as viewed when they appear on screen</li>
+          <li>Recently viewed snaps appear at the bottom</li>
+          <li>Check your remaining daily uploads in the header</li>
+        </ol>
+      </div>
+      
+      <!-- The SnapFeed will be mounted here -->
+      <div id="snapfeed-root" data-snapfeed></div>
+    </div>
+    
+    <div id="logged-out-view" class="login-prompt">
+      <h2>Welcome to SnapFeed</h2>
+      <p>Please log in to view your snaps</p>
+      <a href="/" class="login-button">Go to Login</a>
+    </div>
+  </div>
+
+  <!-- Include the SnapFeed CSS -->
+  <link rel="stylesheet" href="/css/snapfeed.css">
+  
+  <!-- Include the SnapFeed JavaScript -->
+  <script src="/js/snapfeed/SnapFeed.js"></script>
+  
+  <script>
+    // Check if user is logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      const userData = localStorage.getItem('user');
+      const loggedInView = document.getElementById('logged-in-view');
+      const loggedOutView = document.getElementById('logged-out-view');
+      
+      if (userData) {
+        // User is logged in
+        loggedInView.style.display = 'block';
+        loggedOutView.style.display = 'none';
+        
+        try {
+          // Initialize the SnapFeed
+          const { token } = JSON.parse(userData);
+          new SnapFeed({
+            containerId: 'snapfeed-root',
+            authToken: token
+          });
+        } catch (error) {
+          console.error('Failed to initialize SnapFeed:', error);
+          loggedInView.innerHTML = `
+            <div class="snap-feed__error">
+              Failed to load feed. Please <a href="/">log in again</a>.
+            </div>
+          `;
+        }
+      } else {
+        // User is not logged in
+        loggedInView.style.display = 'none';
+        loggedOutView.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

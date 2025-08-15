@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KITSFLICK- Login/Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/jpg" href="/favicon/KITSFLICK_LOGO.jpg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fffc00, #ff00ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .logo {
+            text-align: center;
+            margin: 0 auto 3rem;
+            padding: 2rem 1.5rem;
+            background: linear-gradient(-45deg, #1a237e, #283593, #3949ab, #5c6bc0);
+            background-size: 300% 300%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(26, 35, 126, 0.25);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 90%;
+            animation: gradientBG 12s ease infinite;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 15px 45px rgba(26, 35, 126, 0.35);
+        }
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+        .logo h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            color: white;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            position: relative;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #fff, #e0e0ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            padding: 0 1rem;
+        }
+        .logo p {
+            color: rgba(255, 255, 255, 0.95);
+            margin: 1rem 0 0;
+            font-size: 1.2rem;
+            letter-spacing: 0.8px;
+            position: relative;
+            font-weight: 300;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card.active-form {
+            transform: scale(1.02);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .card.inactive-form {
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #0066ff;
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2);
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #0066ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0052cc;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #666;
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .error-message {
+            color: #ff3333;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Success Popup */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+
+        .popup-content i {
+            font-size: 3rem;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .popup-content h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .popup-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .popup-content .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .form-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>KITSFLICK</h1>
+            <p>KITSW, your campus feed</p>
+        </div>
+
+        <!-- Message Container for Alerts -->
+        <div id="message-container"></div>
+
+        <div class="form-container">
+            <!-- Login Form -->
+            <div id="login-form" class="card active-form">
+                <h2>Welcome Back</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label for="login-password">Password</label>
+                            <a href="#" class="text-muted" style="font-size: 0.9rem;">Forgot password?</a>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="login-password" class="form-control" required>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('login-password')">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Log In
+                    </button>
+                </form>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="card inactive-form">
+                <h2>Create Account</h2>
+                <p class="text-center text-muted mb-4">Use your @kitsw.ac.in email to sign up</p>
+                
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="signup-username">Username</label>
+                        <input type="text" id="signup-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">KITSW Email</label>
+                        <input type="email" id="signup-email" class="form-control" required 
+                               placeholder="username@kitsw.ac.in" 
+                               oninput="validateKitswEmail(this)">
+                        <div id="email-error" class="error-message" style="color: red; display: none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <div class="input-group">
+                            <input type="password" id="signup-password" class="form-control" required minlength="6">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('signup-password')">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-requirements text-muted" style="font-size: 0.8rem; margin-top: 5px;">
+                            Must be at least 6 characters
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="input-group">
+                            <input type="password" id="confirm-password" class="form-control" required>
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('confirm-password')">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                        <div id="password-match-error" class="error-message">
+                            <i class="fas fa-exclamation-circle"></i> Passwords do not match
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="signup-button">
+                        Create Account
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                By signing up, you agree to our 
+                <a href="#" style="color: #0066ff; text-decoration: none;">Terms</a> and 
+                <a href="#" style="color: #0066ff; text-decoration: none;">Privacy Policy</a>.
+            </p>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="successPopup" class="popup-overlay">
+        <div class="popup-content">
+            <i class="fas fa-check-circle"></i>
+            <h3>Success!</h3>
+            <p id="successMessage">Account created successfully!</p>
+            <button class="btn" onclick="document.getElementById('successPopup').classList.remove('active')">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = field.nextElementSibling.querySelector('i');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Show message function
+        function showMessage(message, isError = false) {
+            if (!isError) {
+                // Show success popup
+                const popup = document.getElementById('successPopup');
+                const successMessage = document.getElementById('successMessage');
+                
+                if (successMessage) successMessage.textContent = message;
+                if (popup) {
+                    popup.classList.add('active');
+                    
+                    // Auto-hide after 3 seconds
+                    setTimeout(() => {
+                        popup.classList.remove('active');
+                    }, 3000);
+                }
+            } else {
+                // For errors, use the existing message container
+                const messageContainer = document.getElementById('message-container');
+                if (messageContainer) {
+                    messageContainer.textContent = message;
+                    messageContainer.className = 'message error';
+                    messageContainer.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        messageContainer.style.display = 'none';
+                    }, 5000);
+                }
+            }
+        }
+
+        // Handle form focus (active state)
+        function setActiveForm(formId) {
+            const forms = document.querySelectorAll('.card');
+            forms.forEach(form => {
+                if (form.id === formId) {
+                    form.classList.add('active-form');
+                    form.classList.remove('inactive-form');
+                } else {
+                    form.classList.remove('active-form');
+                    form.classList.add('inactive-form');
+                }
+            });
+        }
+
+        // Form submission handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize forms
+            setActiveForm('login-form');
+            
+            // Password validation
+            const signupPassword = document.getElementById('signup-password');
+            const confirmPassword = document.getElementById('confirm-password');
+            const passwordMatchError = document.getElementById('password-match-error');
+            const signupButton = document.getElementById('signup-button');
+            
+            // Form click handlers
+            document.getElementById('login-form').addEventListener('click', (e) => {
+                if (e.target.closest('form') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+                setActiveForm('login-form');
+            });
+            
+            document.getElementById('signup-form').addEventListener('click', (e) => {
+                if (e.target.closest('form') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+                setActiveForm('signup-form');
+            });
+
+            // Email validation
+            window.validateKitswEmail = function(input) {
+                const email = input.value.trim();
+                const errorElement = document.getElementById('email-error');
+                
+                if (!email) {
+                    errorElement.style.display = 'none';
+                    return true;
+                }
+                
+                const isValid = email.endsWith('@kitsw.ac.in');
+                
+                if (!isValid) {
+                    errorElement.textContent = 'Please use your @kitsw.ac.in email address';
+                    errorElement.style.display = 'block';
+                    input.style.borderColor = '#ff4444';
+                } else {
+                    errorElement.style.display = 'none';
+                    input.style.borderColor = '#28a745';
+                }
+                
+                return isValid;
+            };
+            
+            // Update form submission to validate email
+            document.getElementById('signupForm').addEventListener('submit', function(e) {
+                const emailInput = document.getElementById('signup-email');
+                if (!validateKitswEmail(emailInput)) {
+                    e.preventDefault();
+                    emailInput.focus();
+                }
+            });
+            
+            // Password match validation
+            function validatePasswords() {
+                if (signupPassword.value !== confirmPassword.value) {
+                    passwordMatchError.style.display = 'block';
+                    signupButton.disabled = true;
+                    signupButton.style.opacity = '0.7';
+                    return false;
+                } else {
+                    passwordMatchError.style.display = 'none';
+                    signupButton.disabled = false;
+                    signupButton.style.opacity = '1';
+                    return true;
+                }
+            }
+
+            if (signupPassword && confirmPassword) {
+                [signupPassword, confirmPassword].forEach(input => {
+                    input.addEventListener('input', validatePasswords);
+                });
+            }
+
+            // Handle successful signup
+            function handleSignupSuccess() {
+                showMessage('Account created successfully! You can now login.');
+                
+                // Switch to login form after a short delay
+                setTimeout(() => {
+                    setActiveForm('login-form');
+                    document.getElementById('signupForm').reset();
+                }, 1500);
+            }
+
+            // Login form submission
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('login-username').value;
+                    const password = document.getElementById('login-password').value;
+                    
+                    try {
+                        const response = await fetch('/api/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ username, password })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            showMessage('Login successful!', false);
+                            // Store user data with token
+                            const userData = {
+                                ...data.user,
+                                token: data.token
+                            };
+                            localStorage.setItem('user', JSON.stringify(userData));
+                            
+                            // Wait for 1 second before redirecting
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                            window.location.href = '/feed.html';
+                        } else {
+                            showMessage(data.message || 'Login failed. Please try again.', true);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showMessage('An error occurred. Please try again.', true);
+                    }
+                });
+            }
+
+            // Signup form submission
+            const signupForm = document.getElementById('signupForm');
+            if (signupForm) {
+                signupForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    if (!validatePasswords()) return;
+                    
+                    const username = document.getElementById('signup-username').value.trim();
+                    const email = document.getElementById('signup-email').value.trim();
+                    const password = document.getElementById('signup-password').value;
+                    
+                    // Basic validation
+                    if (!email) {
+                        showMessage('Please enter your email', true);
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('/api/signup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ username, email, password })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            handleSignupSuccess();
+                        } else {
+                            showMessage(data.message || 'Signup failed. Please try again.', true);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showMessage('An error occurred. Please try again.', true);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

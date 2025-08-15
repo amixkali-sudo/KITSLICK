@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FFFC00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>KITSFLICK - Feed</title>
+    <link rel="icon" type="image/jpg" href="/favicon/KITSFLICK_LOGO.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/test-styles.css">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #FF2D55;
+            --primary-hover: #e61e4d;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #262626;
+            --text-secondary: #8e8e8e;
+            --border-color: #dbdbdb;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --header-height: 60px;
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --card-bg: #1e1e1e;
+                --text-primary: #f5f5f5;
+                --text-secondary: #a8a8a8;
+                --border-color: #363636;
+                --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+                --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+            }
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            padding-bottom: calc(env(safe-area-inset-bottom) + 60px);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Header styles */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000;
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        @supports (backdrop-filter: none) {
+            .app-header {
+                background: rgba(255, 255, 255, 0.8);
+            }
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .app-header {
+                background: rgba(18, 18, 18, 0.8);
+                border-bottom-color: #333;
+            }
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+            height: 100%;
+        }
+        
+        .app-header h1 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            height: 36px;
+            white-space: nowrap;
+        }
+        
+        .button.secondary {
+            background: var(--bg-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            width: 36px;
+            border-radius: 50%;
+        }
+        
+        .button:active {
+            transform: scale(0.96);
+        }
+        
+        .button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button.secondary:hover {
+            background: var(--bg-color);
+            box-shadow: none;
+        }
+        
+        /* Main content area */
+        main {
+            padding: calc(var(--header-height) + 1rem) 1rem 5rem;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        /* Snap Feed Container */
+        .snap-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        /* Snap Card */
+        .snap-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+        
+        .snap-card:active {
+            transform: scale(0.99);
+        }
+        
+        .snap-image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+        
+        .snap-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .snap-card:hover .snap-image {
+            transform: scale(1.02);
+        }
+        
+        .snap-info {
+            padding: 0.75rem 1rem 1rem;
+        }
+        
+        .snap-user {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .snap-username {
+            font-weight: 600;
+        }
+        
+        .snap-caption {
+            color: var(--text-primary);
+            margin: 0.25rem 0 0.5rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        
+        .snap-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .snap-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .action-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-primary);
+        }
+        
+        .action-button.liked {
+            color: #ed4956;
+        }
+        
+        /* Loading state */
+        .loading-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            animation: shimmer 1.5s infinite linear;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            background-size: 1000px 100%;
+            border: 1px solid var(--border-color);
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border-color);
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .empty-state h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0 calc(0.75rem + env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.7rem;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            opacity: 0.7;
+        }
+        
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+            opacity: 1;
+        }
+        
+        .nav-item.upload-button {
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -20px;
+            box-shadow: 0 4px 12px rgba(255, 45, 85, 0.3);
+        }
+        
+        .nav-item.upload-button i {
+            font-size: 1.1rem;
+        }
+        
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+        
+        /* Status Messages */
+        .status-message {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.6; transform: scale(1); }
+        }
+        
+        .new-snap-alert {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .refresh-link {
+            color: white;
+            text-decoration: underline;
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .loading-message {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        
+        .loading-message .loading-card {
+            width: 100%;
+            height: 100px;
+            margin: 0 auto;
+        }
+        
+        /* Coming Soon Popup */
+        .coming-soon-popup {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            z-index: 1100;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+        
+        .coming-soon-popup.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .coming-soon-popup i {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            .button .button-text {
+                display: none;
+            }
+            
+            .button {
+                padding: 0.5rem;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                justify-content: center;
+            }
+            
+            .username {
+                display: none;
+            }
+            
+            .nav-item span {
+                font-size: 0.6rem;
+            }
+            
+            .nav-item i {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (min-width: 481px) {
+            .bottom-nav {
+                max-width: 500px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: 20px 20px 0 0;
+                border-left: 1px solid var(--border-color);
+                border-right: 1px solid var(--border-color);
+                border-bottom: none;
+                padding: 0.75rem 0.5rem calc(0.75rem + env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="header-content">
+            <h1>SnapShare</h1>
+            <div class="user-info">
+                <span id="loggedInUsername" class="username">Guest</span>
+                <a href="/upload" class="button" aria-label="Create new snap">
+                    <i class="fas fa-plus"></i>
+                    <span class="button-text">New Snap</span>
+                </a>
+                <button id="logoutBtn" class="button secondary" aria-label="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div id="snapFeed" class="snap-feed">
+            <!-- Snaps will be loaded here by feed.js -->
+            <div class="loading-card" style="height: 500px;"></div>
+            <div class="loading-card" style="height: 500px;"></div>
+        </div>
+        
+        <!-- Connection status (hidden by default) -->
+        <div id="connectionStatus" class="status-message" style="display: none;">
+            <div class="status-dot"></div>
+            <span class="status-text">Connecting...</span>
+        </div>
+        
+        <!-- New snap alert (hidden by default) -->
+        <div id="newSnapAlert" class="new-snap-alert" style="display: none;">
+            <span>New snap available!</span>
+            <a href="#" id="refreshFeedLink" class="refresh-link">Refresh</a>
+        </div>
+        
+        <!-- Loading message (hidden by default) -->
+        <div id="loadingMessage" class="loading-message" style="display: none;">
+            <div class="loading-card"></div>
+        </div>
+        
+        <!-- Empty feed message (hidden by default) -->
+        <div id="emptyFeed" class="empty-state" style="display: none;">
+            <i class="fas fa-camera"></i>
+            <h3>No snaps yet</h3>
+            <p>Be the first to share a snap!</p>
+            <a href="/upload" class="button">
+                <i class="fas fa-plus"></i> Create Snap
+            </a>
+        </div>
+    </main>
+
+    <!-- Coming Soon Popup -->
+    <div id="comingSoonPopup" class="coming-soon-popup">
+        <div class="popup-content">
+            <i class="fas fa-clock"></i>
+            <p>This feature is coming soon!</p>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" id="homeNav" aria-label="Home">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" id="discoverNav" aria-label="Discover">
+            <i class="fas fa-search"></i>
+            <span>Discover</span>
+        </a>
+        <a href="/upload" class="nav-item upload-button" aria-label="Upload">
+            <i class="fas fa-plus"></i>
+        </a>
+        <a href="#" class="nav-item" id="activityNav" aria-label="Activity">
+            <i class="far fa-heart"></i>
+            <span>Activity</span>
+        </a>
+        <a href="#" class="nav-item" id="profileNav" aria-label="Profile">
+            <i class="far fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Coming soon popup functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const popup = document.getElementById('comingSoonPopup');
+            const navItems = ['homeNav', 'discoverNav', 'activityNav', 'profileNav'];
+            
+            navItems.forEach(id => {
+                const navItem = document.getElementById(id);
+                if (navItem) {
+                    navItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        showComingSoon();
+                    });
+                }
+            });
+            
+            function showComingSoon() {
+                popup.classList.add('show');
+                
+                // Hide popup after 2 seconds
+                setTimeout(() => {
+                    popup.classList.remove('show');
+                }, 2000);
+            }
+        });
+    </script>
+    <script src="/js/feed.js"></script>
+</body>
+</html>
+
